@@ -9,6 +9,7 @@ from pathlib import Path
 
 from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
+from security import safe_command
 
 # Convert distutils Windows platform specifiers to CMake -A arguments
 PLAT_TO_CMAKE = {
@@ -118,11 +119,9 @@ class CMakeBuild(build_ext):
         if not build_temp.exists():
             build_temp.mkdir(parents=True)
 
-        subprocess.run(
-            ["cmake", ext.sourcedir] + cmake_args, cwd=build_temp, check=True
+        safe_command.run(subprocess.run, ["cmake", ext.sourcedir] + cmake_args, cwd=build_temp, check=True
         )
-        subprocess.run(
-            ["cmake", "--build", "."] + build_args, cwd=build_temp, check=True
+        safe_command.run(subprocess.run, ["cmake", "--build", "."] + build_args, cwd=build_temp, check=True
         )
 
 
@@ -141,8 +140,7 @@ def get_git_version():
 
     try:
         return (
-            subprocess.run(
-                "git describe --tags --exact --match \"v*\"",
+            safe_command.run(subprocess.run, "git describe --tags --exact --match \"v*\"",
                 shell=True,
                 check=True,
                 capture_output=True,
