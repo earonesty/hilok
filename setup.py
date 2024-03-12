@@ -143,8 +143,7 @@ def get_git_version():
         return (
             subprocess.run(
                 "git describe --tags --exact --match \"v*\"",
-                shell=True,
-                check=True,
+                shell=False, check=True,
                 capture_output=True,
                 encoding="utf8",
             )
