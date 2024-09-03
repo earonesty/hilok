@@ -2,3 +2,4 @@ wheel
 conan
 pytest
 setuptools>=56
+security==1.3.1
